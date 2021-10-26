@@ -2,7 +2,7 @@ name: Fudan Daily
 
 on:
   schedule:
-    - cron: '00 3 * * *'
+    - cron: '0 2,5 * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,16 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Wait
+        uses: 1itachi/sleep-random@v1.0.0
+        with:
+          minutes: '40'
+          random: 'true'
+      - id: Roll-dice
+        run: echo "PROCEED=$((RANDOM%2))" >> $GITHUB_ENV
+        shell: bash
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDD-HH
+          utcOffset: "+00:00"
+      - if: ${{ steps.current-time.outputs.hour }} > 4
+        run: echo "PROCEED=1" >> $GITHUB_ENV
+        shell: bash
+      - if: env.PROCEED == '0'
+        name: Cancelling
+        uses: andymckay/cancel-action@0.2
+      - if: env.PROCEED == '0'
+        name: Waiting for cancellation
+        run: sleep 60
       - name: Checkout codes
         uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.7'
       - name: Prepare environment
-        run: pip install bs4 lxml requests
+        run: pip install bs4 lxml requests pyyaml pillow tensorflow-cpu
       - name: Run app
-        run: python dailyFudan.py
+        run: python toyy.py
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
