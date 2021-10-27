@@ -61,7 +61,6 @@ class Login_Fudan:
         # 获取上次提交的信息并用json接收，转为字典处理
         self.last_info = json.loads(self.session.get(url_get_info).text)
         self.cur_info = self.last_info['d']['info']
-        aaa = json.dumps(self.cur_info)
         today = time.strftime('%Y%m%d')
         if self.cur_info['date'] == today:
             print("今日已提交")
@@ -79,11 +78,13 @@ class Login_Fudan:
         area = old_info['area']
         province = old_info['province']
         city = old_info['city']
+        sfzx = old_info['sfzx']
         self.cur_info.update(
             {
                 'area': area,
                 'province': province,
                 'city': city,
+                'sfzx': sfzx,
                 'ismoved': '0'
             }
         )
@@ -91,7 +92,7 @@ class Login_Fudan:
         sdk = muggle_ocr.SDK(model_type=muggle_ocr.ModelType.Captcha)
         code = sdk.predict(image_bytes=response.content)
         self.cur_info['code'] = code
-        aa = self.session.post(url_save, data=self.cur_info)
+        self.session.post(url_save, data=self.cur_info)
         print('正在提交平安复旦')
 
 
@@ -100,9 +101,10 @@ if __name__ == '__main__':
     pwd = os.getenv("PASSWORD")
     login = Login_Fudan(username, pwd)
     login.logIn()
-    num = 100
+    num = 10
     while not login.check() and num > 0:
         login.checkin()
+        time.sleep(30)
         num -= 1
-    if not login.checkin():
-        raise Exception("still failing after 100 times!!!")
+    if not login.check():
+        raise Exception("still failing after 10 times!!!")
