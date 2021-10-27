@@ -13,7 +13,7 @@ jobs:
       - name: Wait
         uses: 1itachi/sleep-random@v1.0.0
         with:
-          minutes: '40'
+          minutes: '45'
           random: 'true'
       - id: Roll-dice
         run: echo "PROCEED=$((RANDOM%2))" >> $GITHUB_ENV
@@ -40,7 +40,7 @@ jobs:
         with:
           python-version: '3.7'
       - name: Prepare environment
-        run: pip install bs4 lxml requests pyyaml pillow tensorflow-cpu
+        run: pip install bs4 lxml requests pyyaml pillow tensorflow-cpu opencv-python
       - name: Run app
         run: python toyy.py
         env:
