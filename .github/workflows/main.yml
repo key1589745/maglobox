@@ -40,7 +40,7 @@ jobs:
         with:
           python-version: '3.7'
       - name: Prepare environment
-        run: pip install bs4 lxml requests pyyaml pillow tensorflow-cpu opencv-python cryptography==36.0.2
+        run: pip install bs4 lxml requests pyyaml pillow tensorflow-cpu opencv-python
       - name: Run app
         run: python toyy.py
         env:
