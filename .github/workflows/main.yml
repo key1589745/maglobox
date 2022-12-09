@@ -13,7 +13,7 @@ jobs:
       - name: Wait
         uses: 1itachi/sleep-random@v1.0.0
         with:
-          minutes: '10'
+          minutes: '2'
           random: 'true'
       - id: Roll-dice
         run: echo "PROCEED=$((RANDOM%2))" >> $GITHUB_ENV
